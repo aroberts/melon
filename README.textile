@@ -1,0 +1,21 @@
+h1. Melon
+
+A Media file catalog system.
+
+h2. Synopsis
+
+TODO
+
+h2. Installation
+
+<pre>
+gem install melon
+</pre>
+
+h2. Usage
+
+TODO
+
+h2. Author
+
+Copyright 2010 Andrew Roberts

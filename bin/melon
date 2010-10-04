@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+#
+#  Created by Andrew Roberts on 2010-10-4.
+#  Copyright (c) 2010. All rights reserved.
+
+require 'rubygems'
+require File.expand_path(File.dirname(__FILE__) + "/../lib/melon")
+require "melon/cli"
+
+Melon::CLI.execute(STDOUT, ARGV)
