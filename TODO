@@ -4,3 +4,5 @@ Command line parsing:
 * this may make it hard to guess at unrecognized commands
 * commands don't have a dash
 
+Testing:
+* fix rcov rake world

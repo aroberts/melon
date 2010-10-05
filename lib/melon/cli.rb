@@ -2,41 +2,59 @@ require 'optparse'
 
 module Melon
   class CLI
-    def self.execute(stdout, arguments=[])
 
-      # NOTE: the option -p/--path= is given as an example, and should be replaced in your application.
+    attr_accessor :options, :parsed_arguments
 
-      options = {
-        :path     => '~'
+    def self.commands
+      %w(help)
+    end
+
+    def self.execute(arguments=[])
+      new(arguments).run
+    end
+
+    def self.split_arguments(arguments)
+
+      [arguments, arguments, arguments]
+    end
+
+    def initialize(arguments)
+      self.options = {
+        :database => '~/.melon/melon.db'
       }
-      mandatory_options = %w(  )
 
-      parser = OptionParser.new do |opts|
+      self.parsed_arguments = ParsedArguments.new(arguments)
+    end
+
+    def run
+      parser.parse!(program_args)
+      # do stuff
+      stdout.puts "Using database: #{options[:database]}"
+    end
+
+    def parser
+      @parser ||= OptionParser.new do |opts|
         opts.banner = <<-BANNER.gsub(/^          /,'')
-          This application is wonderful because...
-
-          Usage: #{File.basename($0)} [options]
+          Usage: #{File.basename($0)} [options] COMMAND [command-options] [ARGS]
 
           Options are:
         BANNER
-        opts.separator ""
-        opts.on("-p", "--path PATH", String,
-                "This is a sample message.",
-                "For multiple lines, add more strings.",
-                "Default: ~") { |arg| options[:path] = arg }
+        opts.on("-d", "--database=PATH", String,
+                "Path to Melon's sqlite database.",
+                "  (default ~/.melon/melon.db)") do |arg|
+          self.options[:database] = arg
+                end
+    
         opts.on("-h", "--help",
-                "Show this help message.") { stdout.puts opts; exit }
-        opts.parse!(arguments)
-
-        if mandatory_options && mandatory_options.find { |option| options[option.to_sym].nil? }
-          stdout.puts opts; exit
+                "Show this help message.") { puts parser; exit }
+        opts.separator ""
+        opts.separator "Commands"
+        
+        self.commands.each do |command|
+          # TODO banner for each command
+          opts.separator
         end
       end
-
-      path = options[:path]
-
-      # do stuff
-      stdout.puts "To update this executable, look in lib/melon/cli.rb"
     end
   end
 end
