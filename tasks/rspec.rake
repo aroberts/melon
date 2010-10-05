@@ -14,8 +14,20 @@ EOS
   exit(0)
 end
 
-desc "Run all specs"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_opts = ['--options', "spec/spec.opts"]
-  t.spec_files = FileList['spec/**/*_spec.rb']
+namespace :spec do
+
+  desc "Run all specs"
+  Spec::Rake::SpecTask.new(:all) do |t|
+    t.spec_opts = ['--options', "spec/spec.opts"]
+    t.spec_files = FileList['spec/**/*_spec.rb']
+  end
+
+  # Spec::Rake::SpecTask.new(:rcov) do |t|
+  #   t.spec_opts = ['--options', "\"#{RAILS_ROOT}/spec/spec.opts\""]
+  #   t.spec_files = FileList['spec/**/*_spec.rb']
+  #   t.rcov = true
+  #   t.rcov_opts = lambda do
+  #     IO.readlines("#{RAILS_ROOT}/spec/rcov.opts").map {|l| l.chomp.split " "}.flatten
+  #   end
+  # end
 end

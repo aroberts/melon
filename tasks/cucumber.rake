@@ -20,9 +20,9 @@ namespace :features do
     t.fork = true
     t.cucumber_opts = ['--format', (ENV['CUCUMBER_FORMAT'] || 'progress')]
   end
-  # Cucumber::Rake::Task.new(:rcov) do |t|
-  #   t.fork = true
-  #   t.rcov = true
-  #   t.rcov_opts = []
+  Cucumber::Rake::Task.new(:rcov) do |t|    
+    t.rcov = true
+    t.rcov_opts = %w{--exclude osx\/objc,gems\/,spec\/,features\/ --aggregate coverage.data}
+    t.rcov_opts << %[-o "coverage"]
   end
 end
