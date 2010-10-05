@@ -1,0 +1,6 @@
+Command line parsing:
+* melon [<opts>] <cmd> <cmd-params> [<cmd-opts>]
+* pivot on <cmd>, melon opts come before cmd, cmd-opts come after
+* this may make it hard to guess at unrecognized commands
+* commands don't have a dash
+
