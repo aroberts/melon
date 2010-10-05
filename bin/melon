@@ -7,4 +7,4 @@ require 'rubygems'
 require File.expand_path(File.dirname(__FILE__) + "/../lib/melon")
 require "melon/cli"
 
-Melon::CLI.execute(STDOUT, ARGV)
+Melon::CLI.execute(ARGV)
