@@ -15,6 +15,7 @@ module Melon
         # TODO: externalize defaults
         :database => '~/.melon/melon.db'
       }
+      # TODO: read .melonrc here, feed into options
 
       self.parsed_arguments = ParsedArguments.new(arguments)
     end
@@ -47,7 +48,7 @@ module Melon
         usage
       else
         # run the command with the command arguments
-        command.execute(parsed_arguments.command_arguments)
+        command.execute(parsed_arguments.command_arguments, options)
       end
     end
 

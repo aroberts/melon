@@ -1,8 +1,9 @@
 module Melon
   module Commands
     module BasicCommand
-      def execute(arguments)
-        new(arguments).run
+
+      def execute(arguments, options)
+        new(arguments, options).run
       end
 
       # returns name {padding} description, for usage"

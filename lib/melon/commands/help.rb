@@ -14,7 +14,7 @@ module Melon
 
       attr_accessor :arguments
 
-      def initialize(arguments)
+      def initialize(arguments, options)
         self.arguments = arguments
       end
       
@@ -30,7 +30,13 @@ module Melon
       end
 
       def run
-        parser.parse!(arguments)
+        begin
+          parser.parse!(arguments)
+        rescue OptionParser::InvalidOption => e
+          puts "melon: #{e.to_s}"
+          exit 1
+        end
+
         if arguments == ['help']
           puts parser
           exit
