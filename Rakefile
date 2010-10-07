@@ -1,8 +1,11 @@
 require 'rubygems'
 require 'fileutils'
 
-desc 'Default: run the cucumber features.'
-task :default => "features:all"
+
 task :spec => "spec:all"
+task :features => "features:all"
+
+desc 'Default: run the cucumber features.'
+task :default => :features
 
 Dir['tasks/**/*.rake'].each { |t| load t }
