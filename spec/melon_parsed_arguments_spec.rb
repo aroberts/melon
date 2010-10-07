@@ -38,3 +38,41 @@ describe Melon::ParsedArguments, "when splitting argument-less commands" do
     @args.command_arguments.should be_empty
   end
 end
+
+describe Melon::ParsedArguments, "when splitting command-less arguments" do
+  before do
+    @args = Melon::ParsedArguments.new(%w(--help))
+  end
+
+  it "should set the program arguments" do
+    @args.program_arguments.should include("--help")
+    @args.program_arguments.length.should == 1
+  end
+
+  it "shound not set a command" do
+    @args.command.should be_nil
+  end
+  
+  it "should not set any command arguments" do
+    @args.command_arguments.should be_nil
+  end
+end
+
+describe Melon::ParsedArguments, "when splitting invalid commands" do
+  before do
+    @args = Melon::ParsedArguments.new(%w(fizzle))
+  end
+
+  it "should not set a command" do
+    @args.command.should be_nil
+  end
+
+  it "should treat the invalid command as a program argument" do
+    @args.program_arguments.should include("fizzle")
+    @args.program_arguments.length.should == 1
+  end
+
+  it "should not set command arguments" do
+    @args.command_arguments.should be_nil
+  end
+end
