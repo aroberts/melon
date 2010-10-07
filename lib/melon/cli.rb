@@ -1,25 +1,18 @@
 require 'optparse'
+require 'melon/parsed_arguments'
+require 'melon/commands'
 
 module Melon
   class CLI
-
-    attr_accessor :options, :parsed_arguments
-
-    def self.commands
-      %w(help)
-    end
-
     def self.execute(arguments=[])
       new(arguments).run
     end
 
-    def self.split_arguments(arguments)
-
-      [arguments, arguments, arguments]
-    end
+    attr_accessor :options, :parsed_arguments
 
     def initialize(arguments)
       self.options = {
+        # TODO: externalize defaults
         :database => '~/.melon/melon.db'
       }
 
@@ -27,9 +20,35 @@ module Melon
     end
 
     def run
-      parser.parse!(program_args)
-      # do stuff
-      stdout.puts "Using database: #{options[:database]}"
+      begin
+        parser.parse!(parsed_arguments.program_arguments)
+      rescue OptionParser::InvalidOption => e
+        puts "melon: #{e.to_s}"
+        exit 1
+      end
+
+      # puts "Using database: #{options[:database]}"
+      if parsed_arguments.command.nil?
+        if parsed_arguments.program_arguments.empty?
+          usage
+        else
+          puts "melon: '#{parsed_arguments.program_arguments.shift}'" +
+            " is not a recognized command." 
+          exit 1;
+        end
+      end
+
+      # find the command
+      command = Melon::Commands.translate_command(parsed_arguments.command)
+      if command == Melon::Commands::Help && 
+        # special case for help with no args - passing usage inside of 
+        # help is a pain, so we'll do it here
+        parsed_arguments.command_arguments.empty?
+        usage
+      else
+        # run the command with the command arguments
+        command.execute(parsed_arguments.command_arguments)
+      end
     end
 
     def parser
@@ -45,16 +64,31 @@ module Melon
           self.options[:database] = arg
                 end
     
+        opts.on("-v", "--version",
+                "Display the program version.") { version }
         opts.on("-h", "--help",
-                "Show this help message.") { puts parser; exit }
+                "Show this help message.") { usage }
         opts.separator ""
         opts.separator "Commands"
         
-        self.commands.each do |command|
-          # TODO banner for each command
-          opts.separator
+        Melon::Commands.command_constants.each do |command|
+          opts.separator "   #{command.short_usage}" if command.short_usage
         end
+
+        opts.separator ""
+        opts.separator "To get help with a specific command," +
+          " use 'melon help COMMAND'"
       end
+    end
+
+    def version
+      puts "melon version #{Melon::VERSION}"
+      exit
+    end
+
+    def usage
+      puts parser
+      exit
     end
   end
 end

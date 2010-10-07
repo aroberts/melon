@@ -1,22 +1,45 @@
+require 'melon/commands/basic_command'
+
 module Melon
   module Commands
-    class Help < Command
-      #TODO port this all up to command
-      def self.execute(arguments, program_options)
-        new(arguments, program_options).run
-      end
+    class Help
+      # Help is a basic command that also ties itself in to cli.usage, so
+      # it's a little bit unconventional.  Retrospectively, I should not
+      # have written it first.  
+      extend BasicCommand
 
       def self.description
         "Get help with a specific command, or with Melon in general"
       end
 
-      # returns name {padding} description, for usage"
-      def self.short_usage_string(padding="")
-        "#{self.class.name.lower} #{padding} #{self.description}"
+      attr_accessor :arguments
+
+      def initialize(arguments)
+        self.arguments = arguments
+      end
+      
+      def parser
+        @parser ||= OptionParser.new do |opts|
+          Melon::Commands.command_hash.each do |name, command|
+            next if command == self.class
+            # TODO help banner: gem help help
+            # TODO flesh out parsing - give short_usage for each command
+            opts.on(name) { command.parser }
+          end
+        end
       end
 
-      # todo: basically, this command takes another command, and then
-      # prints its parser.
+      def run
+        parser.parse!(arguments)
+        if arguments == ['help']
+          puts parser
+          exit
+        end
+        
+        # if arguments are empty, we handled it in CLI
+        puts "melon: '#{arguments.join(' ')}' is not a recognized command."
+        exit 1
+      end
     end
   end
 end
