@@ -6,3 +6,8 @@ Command line parsing:
 
 Testing:
 * fix rcov rake world
+
+Commands:
+* a command helper that
+  * dynamically makes the collection "commands" from files in commands/*
+  * figures out the padding for the banner
