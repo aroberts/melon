@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'melon/parsed_arguments'
 
 describe Melon::ParsedArguments, "when splitting valid arguments" do
