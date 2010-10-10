@@ -17,4 +17,10 @@ Feature: Get help on a command
     """
     melon: 'whizzle' is not a recognized command.
     """
-    
+  Scenario: Running help with an invalid command options
+    When I run "melon help --force"
+    Then the exit status should be 1
+    And the output should contain:
+    """
+    melon: invalid option: --force
+    """
