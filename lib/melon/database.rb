@@ -47,6 +47,9 @@ module Melon
       end
     end
 
+    # how will the Fingerprint object get at the database session?
+    # consider activerecord again
+    # init should establish_connection
     def create_schema
       db.execute("create table fingerprints(
                   id int primary key,

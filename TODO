@@ -11,3 +11,5 @@ Commands:
 * a command helper that
   * dynamically makes the collection "commands" from files in commands/*
   * figures out the padding for the banner
+
+  * google "ruby get all classes declared in a directory"
