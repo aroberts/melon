@@ -1,5 +1,6 @@
 require 'optparse'
 require 'melon/parsed_arguments'
+require 'melon/database'
 require 'melon/commands'
 
 module Melon
@@ -42,9 +43,9 @@ module Melon
       # find the command
       command = Melon::Commands.translate_command(parsed_arguments.command)
       if command == Melon::Commands::Help && 
+        parsed_arguments.command_arguments.empty?
         # special case for help with no args - passing usage inside of 
         # help is a pain, so we'll do it here
-        parsed_arguments.command_arguments.empty?
         usage
       else
         # run the command with the command arguments

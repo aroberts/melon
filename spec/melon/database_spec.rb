@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'melon/database'
-# require 'ftools'
+
+############ DEPRECATED ###############
 
 describe Melon::Database, "when passing a file that doesn't exist" do
   before do
@@ -13,10 +14,6 @@ describe Melon::Database, "when passing a file that doesn't exist" do
   
   it "should be created" do
     File.exist?(@database.path).should be_true
-  end
-
-  it "should be ready for data" do
-    @database.should be_ready
   end
   
 end

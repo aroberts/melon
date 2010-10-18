@@ -1,5 +1,8 @@
 require 'rubygems'
 require 'sqlite3'
+require 'active_record'
+
+require 'melon/fingerprint'
 
 module Melon
   class Database
@@ -8,56 +11,59 @@ module Melon
 
     def initialize(path)
       @path = path
-      needs_create = true unless File.exist?(path)
-      @db = SQLite3::Database.new(path)
 
-      create_schema if needs_create
-    end
-
-    #database exists, table created
-    # ready could prepare some sort of error state - 
-    # * database file is valid/not - quick_check
-    # * table is created/not - table_info(table_name)
-    # * index is created/not - index_info(index_name)
-    def ready?
-      file_ready? && table_ready? && index_ready?
-    end
-
-    def file_ready?
+      ActiveRecord::Base.establish_connection(:adapter => 'sqlite3',
+                                              :database => path)
       begin
-        @db.execute("PRAGMA quick_check").flatten[0] == 'ok'
-      rescue SQLite3::NotADatabaseException
-        false
+        create_schema unless Fingerprint.table_exists?
+      rescue ActiveRecord::StatementInvalid
+        puts "melon: the file '#{path}' is invalid or corrupt."
+        exit 1
       end
     end
 
-    def index_ready?
-      begin
-        !db.execute("pragma index_info(idx_fingerprints)").empty?
-      rescue SQLite3::NotADatabaseException
-        false
-      end
-    end
+    # #database exists, table created
+    # # ready could prepare some sort of error state - 
+    # # * database file is valid/not - quick_check
+    # # * table is created/not - table_info(table_name)
+    # # * index is created/not - index_info(index_name)
+    # def ready?
+    #   file_ready? && table_ready? && index_ready?
+    # end
 
-    def table_ready?
-      begin
-        !db.execute("pragma table_info(fingerprints)").empty?
-      rescue SQLite3::NotADatabaseException
-        false
-      end
-    end
+    # def file_ready?
+    #   begin
+    #     @db.execute("PRAGMA quick_check").flatten[0] == 'ok'
+    #   rescue SQLite3::NotADatabaseException
+    #     false
+    #   end
+    # end
 
-    # how will the Fingerprint object get at the database session?
-    # consider activerecord again
-    # init should establish_connection
+    # def index_ready?
+    #   begin
+    #     !db.execute("pragma index_info(idx_fingerprints)").empty?
+    #   rescue SQLite3::NotADatabaseException
+    #     false
+    #   end
+    # end
+
+    # def table_ready?
+    #   begin
+    #     !db.execute("pragma table_info(fingerprints)").empty?
+    #   rescue SQLite3::NotADatabaseException
+    #     false
+    #   end
+    # end
+
     def create_schema
-      db.execute("create table fingerprints(
-                  id int primary key,
-                   hash varchar(40) not null,
-                   path varchar(1000) not null
-                )")
-      db.execute("create unique index idx_fingerprints
-                 on fingerprints(hash)")
+      ActiveRecord::Base.connection.create_table(:updates) do |t|
+        t.column :hash, :string, :null => false
+        t.column :path, :string, :null => false
+        t.timestamps
+
+        # t.index :hash, :unique => true
+        # t.index :path, :unique => true
+      end
     end
   end
 end
