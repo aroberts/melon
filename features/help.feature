@@ -5,8 +5,18 @@ Feature: Get help on a command
     """
     Usage: melon [options] COMMAND [command-options] [ARGS]
     """
+    
+    # TODO model after trout#help
+    # TODO write stories for add
 
-  Scenario: Running help with help as an argument
+  Scenario: Running help with arguments
+    When I run "melon help help"
+    Then the output should contain:
+    """
+    Something
+    """
+
+  Scenario: Running help with 'commands' as an argument
 
   Scenario: Running help with a command as an argument
 
