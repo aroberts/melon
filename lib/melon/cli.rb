@@ -71,15 +71,15 @@ module Melon
         opts.on("-h", "--help",
                 "Show this help message.") { usage }
         opts.separator ""
-        opts.separator "Commands"
-        
-        Melon::Commands.command_constants.each do |command|
-          opts.separator "   #{command.short_usage}" if command.short_usage
-        end
+        # opts.separator "Commands"
+        # 
+        # Melon::Commands.command_constants.each do |command|
+        #   opts.separator "   #{command.short_usage}" if command.short_usage
+        # end
 
-        opts.separator ""
+        opts.separator "To see a list of commands, use 'melon help commands'."
         opts.separator "To get help with a specific command," +
-          " use 'melon help COMMAND'"
+          " use 'melon help COMMAND'."
       end
     end
 
