@@ -3,7 +3,7 @@ require 'melon/commands/basic_command'
 module Melon
   module Commands
     class Help
-      # Help is a basic command that also ties itself in to cli.usage, so
+      # Help is a basic command that also ties itself in to cli#usage, so
       # it's a little bit unconventional.  Retrospectively, I should not
       # have written it first.  
       extend BasicCommand
