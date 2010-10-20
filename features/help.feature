@@ -10,11 +10,11 @@ Feature: Get help on a command
     # TODO write stories for add
 
   Scenario: Running help with arguments
-    When I run "melon help help"
-    Then the output should contain:
-    """
-    Something
-    """
+    # When I run "melon help help"
+    # Then the output should contain:
+    # """
+    # Get help with using melon
+    # """
 
   Scenario: Running help with 'commands' as an argument
 
