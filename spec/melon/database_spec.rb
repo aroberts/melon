@@ -1,4 +1,3 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 require 'melon/database'
 
 describe Melon::Database, "when passing a file that doesn't exist" do
