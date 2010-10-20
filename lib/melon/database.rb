@@ -26,8 +26,8 @@ module Melon
 
     def create_schema
       ActiveRecord::Base.connection.create_table(:fingerprints) do |t|
-        t.column :hash, :string, :null => false
-        t.column :path, :string, :null => false
+        t.column :digest, :string, :null => false
+        t.column :file, :string, :null => false
         t.column :filetype, :string
         t.timestamps
 
