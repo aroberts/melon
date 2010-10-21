@@ -6,7 +6,7 @@ describe Melon::Fingerprint, "when creating with just a file" do
     File.stub!(:exist?) { true }
 
     @database = Melon::Database.new(nonexistant_database_file)
-    @fingerprint = Melon::Fingerprint.new(:file => 'testo')
+    @fingerprint = Melon::Fingerprint.new(:file => small_media_file)
     @fingerprint.save!
   end
 
