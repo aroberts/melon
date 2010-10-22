@@ -1,12 +1,13 @@
 require 'melon/fingerprint'
 require 'melon/database' # may need to reverse the order of these
 
-describe Melon::Fingerprint, "when creating with just a file" do
+
+describe Fingerprint, "when creating with just a file" do
   before do
     File.stub!(:exist?) { true }
 
-    @database = Melon::Database.new(nonexistant_database_file)
-    @fingerprint = Melon::Fingerprint.new(:file => small_media_file)
+    @database = Database.new(nonexistant_database_file)
+    @fingerprint = Fingerprint.new(:file => small_media_file)
     @fingerprint.save!
   end
 

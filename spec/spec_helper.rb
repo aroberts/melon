@@ -8,6 +8,7 @@ end
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'melon'
+include Melon
 
 
 def nonexistant_database_file
