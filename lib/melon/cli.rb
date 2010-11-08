@@ -41,8 +41,8 @@ module Melon
       end
 
       # find the command
-      command = Melon::Commands.translate_command(parsed_arguments.command)
-      if command == Melon::Commands::Help && 
+      command = Commands.translate_command(parsed_arguments.command)
+      if command == Commands::Help && 
         parsed_arguments.command_arguments.empty?
         # special case for help with no args - passing usage inside of 
         # help is a pain, so we'll do it here
