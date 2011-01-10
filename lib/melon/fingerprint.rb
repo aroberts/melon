@@ -1,24 +1,19 @@
 require 'rubygems'
-require 'active_record'
 
 module Melon
-  class Fingerprint < ActiveRecord::Base
-    validates_presence_of :file
-    validates_presence_of :digest
+  class Fingerprint
 
-    validate :file_must_exist
+    attr_reader :file, :digest
 
-    before_save :make_file_absolute
-    before_validation :store_digest
-
-    # protected
-
-    def file_must_exist
-      errors.add(:file, "doesn't exist.") unless File.exist?(file)
+    def initialize(file)
+      # check errors
+      @file = File.expand_path(file)
+      validate!
+      @digest = calculate_digest
     end
 
-    def make_file_absolute
-      self.file = File.expand_path(file)
+    def validate!
+      raise "File '#{file}' doesn't exist." unless File.exist?(file)
     end
 
     def calculate_digest
@@ -44,10 +39,6 @@ module Melon
         end
         hasher.hexdigest
       end
-    end
-
-    def store_digest
-      self.digest = calculate_digest if changed.include?("file")
     end
   end
 end
