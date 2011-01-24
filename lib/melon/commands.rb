@@ -4,13 +4,14 @@ require 'ftools'
 require 'melon/hasher'
 require 'melon/cli'
 
+# TODO: in commands, parse arguments with parse!  in CLI, parse with order!
+
 module Melon
   module Commands
     # needs a 'verify' command to check integrity of database
     # needs a 'remove' command, or some way to deal with deletes/renames
     class Add
       # TODO force option
-      # TODO don't allow overwrites
       attr_accessor :args, :options
 
       def initialize(args, options)
@@ -49,7 +50,14 @@ module Melon
       end
 
       def run
-        puts "in check"
+        options.database.transaction do
+          args.each do |filename|
+            hash = Hasher.digest(filename)
+            unless options.database[:by_hash][hash]
+              puts File.expand_path(filename)
+            end
+          end
+        end
       end
     end
   end
