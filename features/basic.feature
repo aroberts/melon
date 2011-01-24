@@ -8,15 +8,19 @@ Feature: Basic usage
 
   Scenario: Adding files to a melon database
     When I run "melon -d test.db add test_file"
-    And I run "ls -l test.db"
-    And I run "melon -d test.db check test_file"
-    And I run "ls -l test.db"
-    Then the output should be empty
+    Then the output should contain a hash
+    And the output should contain "test_file"
+
+  Scenario: Adding a file that already exists
+    When I run "melon -d test.db add test_file"
+    And I run "melon -d test.db add test_file"
+    Then the output should contain:
+    """
+    melon: path already present in database
+    """
 
   Scenario: Checking a file that is not in the database
     When I run "melon -d test.db check test_file"
-    Then the output should contain:
-    """
-    test_file
-    """
+    Then the output should contain "test_file"
+    And the output should start with "/"
 
