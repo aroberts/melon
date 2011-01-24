@@ -10,7 +10,7 @@ Cucumber::Rake::Task.new(:features) do |t|
   t.cucumber_opts = "features --format pretty"
 end
 
-eval("$specification = begin; #{IO.read('digestif.gemspec')}; end")
+eval("$specification = begin; #{IO.read('melon.gemspec')}; end")
 Rake::GemPackageTask.new($specification) do |package|
   package.need_zip = true
   package.need_tar = true

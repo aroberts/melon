@@ -8,7 +8,9 @@ Feature: Basic usage
 
   Scenario: Adding files to a melon database
     When I run "melon -d test.db add test_file"
+    And I run "ls -l test.db"
     And I run "melon -d test.db check test_file"
+    And I run "ls -l test.db"
     Then the output should be empty
 
   Scenario: Checking a file that is not in the database
