@@ -16,6 +16,10 @@ h2. Usage
 
 TODO
 
+h2. Motivation
+
+TODO
+
 h2. Author
 
 Copyright 2010 Andrew Roberts

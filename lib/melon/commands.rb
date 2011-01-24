@@ -1,37 +1,48 @@
-require 'melon/commands/help'
-# Dir[File.dirname(__FILE__) + 'commands/*.rb'].each do |file| 
-#   raise File.basename(file, File.extname(file))
-# end
+require 'pstore'
+require 'ftools'
+
+require 'melon/hasher'
 
 module Melon
   module Commands
+    # needs a 'verify' command to check integrity of database
+    class Add
+      attr_accessor :args, :options
 
-    def self.command_constants
-      # TODO: can I just write the classname and prefix the modules?
-      @@command_constants ||= [
-        Melon::Commands::Help,
-      ]
-    end
+      def initialize(args, options)
+        self.args = args
+        self.options = options
+      end
 
-    def self.command_hash
-      @@command_hash ||= Hash[
-        *command_constants.collect do |c|
-          [translate_command(c), c]
-        end.flatten]
-    end
+      def run
+        options.database.transaction do
+          args.each do |filename|
+            puts "Adding #{filename}..."
 
-    def self.commands
-      @@commands ||= command_hash.keys
-    end
+            # hash strategy should be encapsulated, ergo indirection here
+            hash = Hasher.digest(filename)
 
-    def self.translate_command(clazz_or_string)
-      if clazz_or_string.is_a? Class
-        if command_constants.include? clazz_or_string
-          clazz_or_string.to_s.split("::")[-1].downcase
+            absolute_path = File.expand_path(filename)
+
+            options.database[hash] = absolute_path
+            puts "#{hash}:#{absolute_path}"
+            exit 0
+          end
         end
-      else
-        command_hash[clazz_or_string]
-      end || raise(ArgumentError, "'#{clazz_or_string}' is not a valid command.")
+      end
+    end
+
+    class Check
+      attr_accessor :args, :options
+
+      def initialize(args, options)
+        self.args = args
+        self.options = options
+      end
+
+      def run
+        puts "in check"
+      end
     end
   end
 end

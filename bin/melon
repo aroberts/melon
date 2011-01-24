@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
-#
-#  Created by Andrew Roberts on 2010-10-4.
-#  Copyright (c) 2010. All rights reserved.
 
-require 'rubygems'
-require File.expand_path(File.dirname(__FILE__) + "/../lib/melon")
-require "melon/cli"
+lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 
+require 'melon'
 Melon::CLI.execute(ARGV)
+

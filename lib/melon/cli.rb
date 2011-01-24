@@ -1,96 +1,93 @@
+require 'ostruct'
 require 'optparse'
-require 'melon/parsed_arguments'
-require 'melon/database'
+
+require 'melon/version'
 require 'melon/commands'
 
 module Melon
   class CLI
+
     def self.execute(arguments=[])
       new(arguments).run
     end
 
-    attr_accessor :options, :parsed_arguments
+    attr_accessor :arguments
 
     def initialize(arguments)
-      self.options = {
-        # TODO: externalize defaults
-        :database => '~/.melon/melon.db'
-      }
-      # TODO: read .melonrc here, feed into options
-
-      self.parsed_arguments = ParsedArguments.new(arguments)
+      self.arguments = arguments
     end
+
+    def self.default_options
+      options = OpenStruct.new
+      options.database_path = "#{ENV['HOME']}/.melondb"
+      options
+    end    
 
     def run
+      options = parse_options
+      options.database = PStore.new(File.expand_path(options.database_path))
+
+      unless arguments.empty?
+        run_command(options)
+      end
+    end
+
+    def run_command(options)
+      # look for command class in args.shift
+      command_name = arguments.shift
       begin
-        parser.parse!(parsed_arguments.program_arguments)
-      rescue OptionParser::InvalidOption => e
-        puts "melon: #{e.to_s}"
-        exit 1
+        command = Commands.const_get(command_name.capitalize)
+        command.new(arguments, options).run
+      # rescue NameError
+      #   CLI.error "unrecognized command: #{command_name}"
       end
+    end
 
-      # puts "Using database: #{options[:database]}"
-      if parsed_arguments.command.nil?
-        if parsed_arguments.program_arguments.empty?
-          usage
-        else
-          puts "melon: '#{parsed_arguments.program_arguments.shift}'" +
-            " is not a recognized command." 
-          exit 1;
+    def parse_options
+      options = CLI.default_options
+
+      parser = OptionParser.new do |p|
+        p.banner = "Usage: melon [options] COMMAND [command-options] [ARGS]"
+
+        p.separator ""
+        p.separator "Options:"
+        p.separator ""
+
+        p.on("-d", "--database PATH",
+             "Path to database file (#{options.database_path})") do |database|
+          options.database_path = database
+             end
+
+        p.on_tail("-v", "--version", "Show version") do
+          puts Melon.version_string
+          exit 0
         end
+
+        p.on_tail("-h", "--help", "This is it") do
+          puts p
+          exit 0
+        end
+
       end
 
-      # find the command
-      command = Commands.translate_command(parsed_arguments.command)
-      if command == Commands::Help && 
-        parsed_arguments.command_arguments.empty?
-        # special case for help with no args - passing usage inside of 
-        # help is a pain, so we'll do it here
-        usage
-      else
-        # run the command with the command arguments
-        command.execute(parsed_arguments.command_arguments, options)
+      begin
+        parser.parse!(arguments)
+      rescue OptionParser::ParseError => e
+        CLI.error e
       end
+
+      options
     end
-
-    def parser
-      @parser ||= OptionParser.new do |opts|
-        opts.banner = <<-BANNER.gsub(/^          /,'')
-          Usage: #{File.basename($0)} [options] COMMAND [command-options] [ARGS]
-
-          Options are:
-        BANNER
-        opts.on("-d", "--database=PATH", String,
-                "Path to Melon's sqlite database.",
-                "  (default ~/.melon/melon.db)") do |arg|
-          self.options[:database] = arg
-                end
     
-        opts.on("-v", "--version",
-                "Display the program version.") { version }
-        opts.on("-h", "--help",
-                "Show this help message.") { usage }
-        opts.separator ""
-        # opts.separator "Commands"
-        # 
-        # Melon::Commands.command_constants.each do |command|
-        #   opts.separator "   #{command.short_usage}" if command.short_usage
-        # end
-
-        opts.separator "To see a list of commands, use 'melon help commands'."
-        opts.separator "To get help with a specific command," +
-          " use 'melon help COMMAND'."
+    def self.error(error_obj_or_str, code = 1)
+      if error_obj_or_str.respond_to?('to_s')
+        error_str = error_obj_or_str.to_s
+      else
+        error_str = error_obj_or_str.inspect
       end
-    end
 
-    def version
-      puts "melon version #{Melon::VERSION}"
-      exit
-    end
-
-    def usage
-      puts parser
-      exit
+      $stderr.puts "melon: #{error_str}"
+      exit code
     end
   end
 end
