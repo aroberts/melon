@@ -77,7 +77,7 @@ module Melon
       end
 
       begin
-        parser.parse!(arguments)
+        parser.order!(arguments)
       rescue OptionParser::ParseError => e
         CLI.error e
       end
