@@ -27,6 +27,12 @@ module Melon
       options = parse_options
       options.database = PStore.new(File.expand_path(options.database_path))
 
+      # prepare db
+      options.database.transaction do
+        options.database[:by_hash] ||= {}
+        options.database[:by_path] ||= {}
+      end
+
       unless arguments.empty?
         run_command(options)
       end
