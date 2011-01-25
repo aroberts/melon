@@ -1,10 +1,14 @@
 h1. Melon
 
-A Media file catalog system.
+A media file cataloging tool.
 
 h2. Synopsis
 
-TODO
+Melon is a tool for tracking files based on content, aiming
+to scale to arbitrarily large files without slowing down.  It uses
+a sparse hashing algorithm to generate a digest without having to
+read the whole file, allowing it to go much faster than disk would
+ordinarily allow.
 
 h2. Installation
 
@@ -18,7 +22,7 @@ TODO
 
 h2. Motivation
 
-TODO
+"Is this file copied onto my media drive yet?"
 
 h2. Author
 
