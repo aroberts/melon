@@ -56,6 +56,15 @@ module Melon
         p.banner = "Usage: melon [options] COMMAND [command-options] [ARGS]"
 
         p.separator ""
+        p.separator "Commands:"
+        p.separator ""
+
+        %w(add check).each do |command|
+          cls = Commands.const_get(command.capitalize)
+          p.separator format_command(command, cls.description)
+        end
+
+        p.separator ""
         p.separator "Options:"
         p.separator ""
 
@@ -84,6 +93,19 @@ module Melon
 
       options
     end
+
+    def format_command(name, desc, margin = 4, width = 22, wrapdesc = 80)
+      pad = "\n" + ' ' * width
+      desc = wrap_text(desc, wrapdesc - width).split("\n").join(pad)
+
+      ' ' * margin + "#{name.ljust(width-margin)}#{desc}"
+    end
+
+    def wrap_text(txt, col = 80)
+      txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
+               "\\1\\3\n") 
+    end
+    
     
     def self.error(error_obj_or_str, code = 1)
       if error_obj_or_str.respond_to?('to_s')

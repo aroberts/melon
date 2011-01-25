@@ -23,7 +23,7 @@ module Melon
         raise
       end
 
-      def description
+      def self.description
         raise
       end
 
@@ -39,7 +39,7 @@ module Melon
 
     class Add < Base
 
-      def description
+      def self.description
         "Add files to the melon database"
       end
 
@@ -47,7 +47,7 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon add file [file [file ...]]"
           p.separator ""
-          p.separator description
+          p.separator Add.description
 
           p.separator ""
           p.separator "Options:"
@@ -88,15 +88,22 @@ module Melon
       end
     end
 
-    class Check
-      attr_accessor :args, :options
+    class Check < Base
+      def self.description
+        "Determine whether or not a copy of a file resides in the database"
+      end
 
-      def initialize(args, options)
-        self.args = args
-        self.options = options
+      def parser
+        @parser ||= OptionParser.new do |p|
+          p.banner = "Usage: melon check file [file [file ...]]"
+          p.separator ""
+          p.separator Check.description
+        end
       end
 
       def run
+        parse_options!
+
         options.database.transaction do
           args.each do |filename|
             hash = Hasher.digest(filename)
