@@ -45,7 +45,7 @@ module Melon
 
       def parser
         @parser ||= OptionParser.new do |p|
-          p.banner = "Usage: melon add file [file [file ...]]"
+          p.banner = "Usage: melon add [options] file [file [file ...]]"
           p.separator ""
           p.separator Add.description
 
@@ -53,11 +53,11 @@ module Melon
           p.separator "Options:"
           p.separator ""
 
-          p.on("-f", "--force",
-               "Add a file even if it already exists, overwriting",
-               "any previously stored data") do
-            options.force = true
-               end
+          # p.on("-f", "--force",
+          #      "Force the recalculation of the path that",
+          #      " already exists in the database") do
+          #   options.force = true
+          #      end
         end
       end
 
@@ -65,20 +65,24 @@ module Melon
         parse_options!
 
         options.database.transaction do
-          args.each do |filename|
-            # puts "Adding #{filename}..."
+          args.each do |arg|
+            filename = File.expand_path(arg)
+
+            if File.directory?(filename)
+              CLI.error "argument is a directory: #{arg}"
+            end
+
+            if options.database[:by_path][filename]# and !options.force
+              CLI.error "path already present in database: #{arg}"
+            end
 
             # hash strategy should be encapsulated, ergo indirection here
             hash = Hasher.digest(filename)
 
-            filename = File.expand_path(filename)
-            if File.directory?(filename)
-              CLI.error "argument is a directory: #{filename}"
+            if options.database[:by_hash][hash]
+              CLI.error "file exists elsewhere in the database: #{arg}"
             end
 
-            if options.database[:by_path][filename] and !options.force
-              CLI.error "path already present in database"
-            end
 
             options.database[:by_hash][hash] = filename
             options.database[:by_path][filename] = hash
