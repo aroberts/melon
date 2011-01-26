@@ -27,6 +27,7 @@ module Melon
     #   matching up (integrity) [file exists, hashes match]
     # needs a 'remove' command, or some way to deal with deletes/renames
     # needs a 'list' command
+    # needs a 'show' command - where is this file installed
     class Base
       include Helpers
       attr_accessor :args, :options
@@ -65,7 +66,7 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon add [options] file [file [file ...]]"
           p.separator ""
-          p.separator Add.description
+          p.separator blockquote(Add.description + ".")
 
           p.separator ""
           p.separator "Options:"
@@ -123,7 +124,8 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon check file [file [file ...]]"
           p.separator ""
-          p.separator Check.description
+          p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
+          
         end
       end
 
