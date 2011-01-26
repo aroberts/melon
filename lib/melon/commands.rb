@@ -27,7 +27,6 @@ module Melon
     #   matching up (integrity) [file exists, hashes match]
     # needs a 'remove' command, or some way to deal with deletes/renames
     # needs a 'list' command
-    # needs a 'show' command - where is this file installed
     class Base
       include Helpers
       attr_accessor :args, :options
@@ -53,12 +52,15 @@ module Melon
           error "#{self.class.to_s.split("::").last.downcase}: #{e}"
         end
 
-        # verify remaining args are files
+        # verify remaining args are files - overrideable
+        verify_args
+      end
+
+      def verify_args
         args.each do |arg|
           error "no such file: #{arg}" unless File.exists?(arg)
         end
       end
-
     end
 
     class Add < Base
@@ -129,7 +131,6 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon show file [file [file ...]]"
           p.separator ""
-          # p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
           p.separator blockquote(self.class.description + <<EOS
 .  If the file's hash matches a hash in the database, then
 the associated path in the database is printed.  Otherwise,
@@ -164,7 +165,6 @@ EOS
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon check file [file [file ...]]"
           p.separator ""
-          # p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
           p.separator blockquote(self.class.description + <<EOS
 .  If the file's hash matches a hash in the database, nothing is
 printed.  Otherwise, the full path to the file is printed.
@@ -184,6 +184,36 @@ EOS
             unless options.database[:by_hash][hash]
               puts File.expand_path(filename)
             end
+          end
+        end
+      end
+    end
+
+    class List < Base
+      def self.description
+        "List the files tracked by the database"
+      end
+
+      def parser
+        @parser ||= OptionParser.new do |p|
+          p.banner = "Usage: melon list"
+          p.separator ""
+          p.separator blockquote(self.class.description)
+          p.separator ""
+          
+        end
+      end
+
+      def verify_args
+        error "invalid argument: #{args.shift}" unless args.empty?
+      end
+
+      def run
+        parse_options!
+
+        options.database.transaction do
+          options.database[:by_hash].each_pair do |hash, path|
+            puts "#{path}:#{hash}"
           end
         end
       end
