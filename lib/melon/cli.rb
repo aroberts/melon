@@ -44,10 +44,13 @@ module Melon
       # look for command class in args.shift
       command_name = arguments.shift
       begin
-        Commands[command_name.capitalize].new(arguments, options).run
-      # rescue NameError
-      #   error "unrecognized command: #{command_name}"
+        c = Commands[command_name.capitalize]
+      rescue NameError => e
+        # don't swallow NoMethodErrors
+        raise e unless e.instance_of(NameError)
+        error "unrecognized command: #{command_name}"
       end
+      c.new(arguments, options).run
     end
 
     def parse_options
