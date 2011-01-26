@@ -12,7 +12,7 @@ Feature: Basic usage
     And the output should start with "/"
 
   Scenario: Checking a file that is in the database:
-    When I run "melon -q -d test.db add test_file"
+    When I run "melon -d test.db add -q test_file"
     And I run "melon -d test.db check test_file"
     Then the output should be empty
 
