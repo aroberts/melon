@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'pstore'
 require 'optparse'
 
 require 'melon/version'
