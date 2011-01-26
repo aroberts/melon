@@ -1,15 +1,32 @@
 module Melon
   module Helpers
-    def format_command(name, desc, margin = 4, width = 22, wrapdesc = 80)
-      pad = "\n" + ' ' * width
-      desc = self.wrap_text(desc, wrapdesc - width).split("\n").join(pad)
+    def format_command(name, desc, options = {})
+      options = {
+        :margin => 4,
+        :width => 22,
+        :wrap => 80
+      }.update(options)
+      
+      pad = "\n" + ' ' * options[:width]
+      desc = self.wrap_text(desc, options[:wrap] - options[:width])
+      desc = desc.split("\n").join(pad)
 
-      ' ' * margin + "#{name.ljust(width-margin)}#{desc}"
+      ' ' * options[:margin] +
+        "#{name.ljust(options[:width] - options[:margin])}#{desc}"
     end
 
     def wrap_text(txt, col = 80)
       txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
                "\\1\\3\n") 
+    end
+
+    def blockquote(string, options = {})
+      options = {
+        :margin => 4,
+        :wrap => 70
+      }.update(options)
+      options[:width] = options.delete(:margin)
+      format_command('', string, options)
     end
     
     def error(error_obj_or_str, code = 1)
