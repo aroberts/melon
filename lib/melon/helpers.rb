@@ -26,7 +26,7 @@ module Melon
         :wrap => 70
       }.update(options)
       options[:width] = options.delete(:margin)
-      format_command('', string, options)
+      format_command('', string.gsub(/\s+/,' ').gsub('\. ', '.  '), options)
     end
     
     def error(error_obj_or_str, code = 1)
