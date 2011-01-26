@@ -1,6 +1,3 @@
-require 'pstore'
-require 'ftools'
-
 require 'melon/hasher'
 require 'melon/helpers'
 
@@ -22,6 +19,7 @@ module Melon
     class << self
       alias :[] :const_get
     end
+
     # needs a 'verify' command to check integrity of database
     #   both internal 2-hash consistency (consistency) and db<->filesystem
     #   matching up (integrity) [file exists, hashes match]
@@ -83,6 +81,10 @@ module Melon
             options.quiet = true
           end
 
+          p.on("-r", "--recursive", "Recursively add directory contents") do
+            options.recursive = true
+          end
+
           # p.on("-f", "--force",
           #      "Force the recalculation of the path that",
           #      " already exists in the database") do
@@ -93,6 +95,16 @@ module Melon
 
       def run
         parse_options!
+
+        if options.recursive
+          self.args = args.collect do |arg|
+            if File.directory?(arg)
+              Dir["#{arg}/**/*"]
+            else
+              arg
+            end
+          end.flatten.reject { |arg| File.directory?(arg) }
+        end
 
         options.database.transaction do
           args.each do |arg|

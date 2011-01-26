@@ -39,4 +39,19 @@ Feature: Adding files to the database
     """
 
   Scenario: Adding a directory recursively
-
+    Given a file named "dir/test1" with:
+    """
+    First test file
+    """
+    And a file named "dir/test2" with:
+    """
+    Second test file
+    """
+    And a file named "dir/test/test3" with:
+    """
+    Third test file
+    """
+    When I run "melon -d test.db add -r dir"
+    Then the output should contain "dir/test1"
+    And the output should contain "dir/test2"
+    And the output should contain "dir/test/test3"
