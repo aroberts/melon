@@ -52,6 +52,11 @@ module Melon
         rescue OptionParser::ParseError => e
           error "#{self.class.to_s.split("::").last.downcase}: #{e}"
         end
+
+        # verify remaining args are files
+        args.each do |arg|
+          error "no such file: #{arg}" unless File.exists?(arg)
+        end
       end
 
     end
@@ -115,6 +120,41 @@ module Melon
       end
     end
 
+    class Show < Base
+      def self.description
+        "Show where the database thinks a file is located"
+      end
+
+      def parser
+        @parser ||= OptionParser.new do |p|
+          p.banner = "Usage: melon show file [file [file ...]]"
+          p.separator ""
+          # p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
+          p.separator blockquote(self.class.description + <<EOS
+.  If the file's hash matches a hash in the database, then
+the associated path in the database is printed.  Otherwise,
+nothing is printed.
+EOS
+                                )
+          p.separator ""
+          
+        end
+      end
+
+      def run
+        parse_options!
+
+        options.database.transaction do
+          args.each do |filename|
+            hash = Hasher.digest(filename)
+            if path = options.database[:by_hash][hash]
+              puts path
+            end
+          end
+        end
+      end
+    end
+
     class Check < Base
       def self.description
         "Determine whether or not a copy of a file resides in the database"
@@ -124,7 +164,13 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon check file [file [file ...]]"
           p.separator ""
-          p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
+          # p.separator blockquote(Check.description + '.' + ' hello' * 50, :width=>4) 
+          p.separator blockquote(self.class.description + <<EOS
+.  If the file's hash matches a hash in the database, nothing is
+printed.  Otherwise, the full path to the file is printed.
+EOS
+                                )
+          p.separator ""
           
         end
       end

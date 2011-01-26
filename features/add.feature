@@ -31,5 +31,12 @@ Feature: Adding files to the database
     directory
     """
 
+  Scenario: Adding a file that doesn't exist
+    When I run "melon -d test.db add nonexistant_file"
+    Then it should fail with:
+    """
+    melon: no such file: nonexistant_file
+    """
+
   Scenario: Adding a directory recursively
 
