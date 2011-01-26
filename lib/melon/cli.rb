@@ -3,9 +3,11 @@ require 'optparse'
 
 require 'melon/version'
 require 'melon/commands'
+require 'melon/helpers'
 
 module Melon
   class CLI
+    include Helpers
 
     def self.execute(arguments=[])
       new(arguments).run
@@ -42,15 +44,14 @@ module Melon
       # look for command class in args.shift
       command_name = arguments.shift
       begin
-        command = Commands.const_get(command_name.capitalize)
-        command.new(arguments, options).run
+        Commands[command_name.capitalize].new(arguments, options).run
       # rescue NameError
-      #   CLI.error "unrecognized command: #{command_name}"
+      #   error "unrecognized command: #{command_name}"
       end
     end
 
     def parse_options
-      options = CLI.default_options
+      options = self.class.default_options
 
       parser = OptionParser.new do |p|
         p.banner = "Usage: melon [options] COMMAND [command-options] [ARGS]"
@@ -82,40 +83,15 @@ module Melon
           puts p
           exit 0
         end
-
       end
 
       begin
         parser.order!(arguments)
       rescue OptionParser::ParseError => e
-        CLI.error e
+        error e
       end
 
       options
-    end
-
-    def format_command(name, desc, margin = 4, width = 22, wrapdesc = 80)
-      pad = "\n" + ' ' * width
-      desc = wrap_text(desc, wrapdesc - width).split("\n").join(pad)
-
-      ' ' * margin + "#{name.ljust(width-margin)}#{desc}"
-    end
-
-    def wrap_text(txt, col = 80)
-      txt.gsub(/(.{1,#{col}})( +|$\n?)|(.{1,#{col}})/,
-               "\\1\\3\n") 
-    end
-    
-    
-    def self.error(error_obj_or_str, code = 1)
-      if error_obj_or_str.respond_to?('to_s')
-        error_str = error_obj_or_str.to_s
-      else
-        error_str = error_obj_or_str.inspect
-      end
-
-      $stderr.puts "melon: #{error_str}"
-      exit code
     end
   end
 end
