@@ -47,7 +47,7 @@ module Melon
         c = Commands[command_name.capitalize]
       rescue NameError => e
         # don't swallow NoMethodErrors
-        raise e unless e.instance_of(NameError)
+        raise e unless e.instance_of?(NameError)
         error "unrecognized command: #{command_name}"
       end
       c.new(arguments, options).run
