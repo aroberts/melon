@@ -6,8 +6,9 @@ module Melon
     def self.each
       consts = []
       base = self.const_get('Base')
-      self.constants.each do |c|
+      self.constants.sort.each do |c|
         const = self.const_get(c)
+
         if const.superclass == base
           consts << const
           yield const 
@@ -20,11 +21,20 @@ module Melon
       alias :[] :const_get
     end
 
+    # empty args should be -h
+
     # needs a 'verify' command to check integrity of database
     #   both internal 2-hash consistency (consistency) and db<->filesystem
     #   matching up (integrity) [file exists, hashes match]
     # needs a 'remove' command, or some way to deal with deletes/renames
-    # needs a 'list' command
+    #   remove: given a tracked file, removes it
+    #           given an untracked file, it hashes it
+    #             and removes it by hash
+    # list needs --paths(only) and --hashes(only)
+    #            --count
+    # check needs -r
+    # update- a function of add, ignore files that are already present in the db
+
     class Base
       include Helpers
       attr_accessor :args, :options
@@ -33,6 +43,10 @@ module Melon
       def initialize(args, options)
         self.args = args
         self.options = options
+      end
+
+      def self.command_name
+        self.to_s.split("::")[-1].downcase
       end
 
       def parser
@@ -47,7 +61,7 @@ module Melon
         begin
           parser.parse!(args)
         rescue OptionParser::ParseError => e
-          error "#{self.class.to_s.split("::").last.downcase}: #{e}"
+          error "#{self.class.command_name}: #{e}"
         end
 
         # verify remaining args are files - overrideable
@@ -145,12 +159,14 @@ module Melon
         @parser ||= OptionParser.new do |p|
           p.banner = "Usage: melon show file [file [file ...]]"
           p.separator ""
-          p.separator blockquote(self.class.description + <<EOS
-.  If the file's hash matches a hash in the database, then
+          p.separator self.class.description + "."
+          p.separator ""
+          p.separator blockquote <<EOS
+  If the file's hash matches a hash in the database, then
 the associated path in the database is printed.  Otherwise,
 nothing is printed.
 EOS
-                                )
+
           p.separator ""
           
         end
@@ -230,6 +246,12 @@ EOS
             puts "#{path}:#{hash}"
           end
         end
+      end
+    end
+
+    class Help < Base
+      def self.description
+        "Get help with a specific command"
       end
     end
   end

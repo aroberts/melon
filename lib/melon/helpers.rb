@@ -6,7 +6,7 @@ module Melon
         :width => 22,
         :wrap => 80
       }.update(options)
-      
+
       pad = "\n" + ' ' * options[:width]
       desc = self.wrap_text(desc, options[:wrap] - options[:width])
       desc = desc.split("\n").join(pad)
@@ -25,8 +25,11 @@ module Melon
         :margin => 4,
         :wrap => 70
       }.update(options)
+      puts string.inspect
       options[:width] = options.delete(:margin)
-      format_command('', string.gsub(/\s+/,' ').gsub('\. ', '.  '), options)
+      format_command('', string.gsub(/\s+/,' ').
+                     gsub(/\. /, '.  ').
+                     gsub(/^ /, '  '), options)
     end
     
     def error(error_obj_or_str, code = 1)

@@ -66,11 +66,17 @@ module Melon
         p.separator "Commands:"
         p.separator ""
 
-        %w(add check).each do |command|
-          cls = Commands.const_get(command.capitalize)
-          p.separator format_command(command, cls.description)
-        end
+        Commands.each do |command|
+          # help goes last
+          if command.command_name == 'help'
+            next
+          end
 
+          p.separator format_command(command.command_name,
+                                     command.description)
+        end
+        p.separator format_command(Commands::Help.command_name,
+                                   Commands::Help.description)
         p.separator ""
         p.separator "Options:"
         p.separator ""
