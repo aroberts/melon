@@ -63,6 +63,8 @@ module Melon
 
     class Add < Base
 
+      # TODO: needs a -r flag to handle directories
+
       def self.description
         "Add files to the melon database"
       end
