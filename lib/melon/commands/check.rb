@@ -7,18 +7,15 @@ module Melon
         "Determine whether or not a copy of a file resides in the database"
       end
 
-      def parser
-        @parser ||= OptionParser.new do |p|
-          p.banner = "Usage: melon check file [file [file ...]]"
-          p.separator ""
-          p.separator blockquote(self.class.description + <<EOS
-.  If the file's hash matches a hash in the database, nothing is
+      def helptext
+        <<EOS
+If the file's hash matches a hash in the database, nothing is
 printed.  Otherwise, the full path to the file is printed.
 EOS
-                                )
-          p.separator ""
-          
-        end
+      end
+
+      def usageargs
+        "file [file [file ...]"
       end
 
       def run

@@ -8,29 +8,13 @@ module Melon
         "Add files to the melon database"
       end
 
-      def parser
-        @parser ||= OptionParser.new do |p|
-          p.banner = "Usage: melon add [options] file [file [file ...]]"
-          p.separator ""
-          p.separator blockquote(Add.description + ".")
+      def parser_options(parser)
+        parser.on("-q", "--quiet", "Suppress printing of hash and path") do
+          options.quiet = true
+        end
 
-          p.separator ""
-          p.separator "Options:"
-          p.separator ""
-
-          p.on("-q", "--quiet", "Suppress printing of hash and path") do
-            options.quiet = true
-          end
-
-          p.on("-r", "--recursive", "Recursively add directory contents") do
-            options.recursive = true
-          end
-
-          # p.on("-f", "--force",
-          #      "Force the recalculation of the path that",
-          #      " already exists in the database") do
-          #   options.force = true
-          #      end
+        parser.on("-r", "--recursive", "Recursively add directory contents") do
+          options.recursive = true
         end
       end
 
@@ -38,13 +22,7 @@ module Melon
         parse_options!
 
         if options.recursive
-          self.args = args.collect do |arg|
-            if File.directory?(arg)
-              Dir["#{arg}/**/*"]
-            else
-              arg
-            end
-          end.flatten.reject { |arg| File.directory?(arg) }
+          self.args = recursively_expand(args)
         end
 
         options.database.transaction do
@@ -55,7 +33,7 @@ module Melon
               error "argument is a directory: #{arg}"
             end
 
-            if options.database[:by_path][filename]# and !options.force
+            if options.database[:by_path][filename]
               error "path already present in database: #{arg}"
             end
 

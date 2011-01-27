@@ -7,23 +7,12 @@ module Melon
         "List the files tracked by the database"
       end
 
-      def parser
-        @parser ||= OptionParser.new do |p|
-          p.banner = "Usage: melon list [options]"
-          p.separator ""
-          p.separator blockquote(self.class.description)
-
-          p.separator ""
-          p.separator "Options:"
-          p.separator ""
-
-          p.on("-p", "--paths", "print only paths") do
+      def parser_options(parser)
+          parser.on("-p", "--paths", "print only paths") do
             options.only_paths = true
           end
           # TODO: re-enable this as -h after help command goes in
-          # p.on("--hashes", "print only hashes") { options.only_hashes = true }
-          
-        end
+          # parser.on("--hashes", "print only hashes") { options.only_hashes = true }
       end
 
       def verify_args

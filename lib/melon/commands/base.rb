@@ -1,3 +1,4 @@
+require 'optparse'
 require 'melon/helpers'
 
 module Melon
@@ -17,8 +18,35 @@ module Melon
       end
 
       def parser
-        raise
+        @parser ||= OptionParser.new do |p|
+          p.banner = usagebanner
+          p.separator ""
+          p.separator blockquote(self.class.description + ".", :margin => 0)
+          p.separator ""
+
+          if helptext
+            p.separator blockquote(" " + helptext)
+            p.separator ""
+          end
+
+          if self.respond_to? :parser_options
+            p.separator "Options:"
+            p.separator ""
+            parser_options(p)
+          end
+        end
       end
+
+
+      def usagebanner
+        usage = "Usage: melon #{self.class.command_name}"
+        usage << " [options]" if self.respond_to?(:parser_options)
+        usage << ' ' << usageargs if usageargs
+        usage
+      end
+
+      def usageargs; end
+      def helptext; end
 
       def self.description
         raise

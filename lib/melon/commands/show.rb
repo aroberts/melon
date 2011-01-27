@@ -7,21 +7,16 @@ module Melon
         "Show where the database thinks a file is located"
       end
 
-      def parser
-        @parser ||= OptionParser.new do |p|
-          p.banner = "Usage: melon show file [file [file ...]]"
-          p.separator ""
-          p.separator self.class.description + "."
-          p.separator ""
-          p.separator blockquote <<EOS
+      def usageargs
+        "file [file [file ...]]"
+      end
+
+      def helptext
+        <<EOS
   If the file's hash matches a hash in the database, then
 the associated path in the database is printed.  Otherwise,
 nothing is printed.
 EOS
-
-          p.separator ""
-          
-        end
       end
 
       def run
