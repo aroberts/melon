@@ -27,6 +27,7 @@ module Melon
       }.update(options)
 
       options[:width] = options.delete(:margin)
+      options[:margin] = 0
       format_command('', string.gsub(/\s+/,' ').
                      gsub(/\. /, '.  ').
                      gsub(/^ /, '  '), options)
@@ -41,6 +42,16 @@ module Melon
 
       $stderr.puts "melon: #{error_str}"
       exit code
+    end
+
+    def recursively_expand(filelist)
+      filelist.collect do |arg|
+        if File.directory?(arg)
+          Dir["#{arg}/**/*"]
+        else
+          arg
+        end
+      end.flatten.reject { |arg| File.directory?(arg) }
     end
   end
 end
