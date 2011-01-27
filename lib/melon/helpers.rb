@@ -25,7 +25,7 @@ module Melon
         :margin => 4,
         :wrap => 70
       }.update(options)
-      puts string.inspect
+
       options[:width] = options.delete(:margin)
       format_command('', string.gsub(/\s+/,' ').
                      gsub(/\. /, '.  ').
