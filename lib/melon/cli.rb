@@ -57,7 +57,7 @@ module Melon
     def parse_options
       options = self.class.default_options
 
-      # TODO: -q option, gags stdout (not stderr)
+      # TODO: empty args should be -h
 
       parser = OptionParser.new do |p|
         p.banner = "Usage: melon [options] COMMAND [command-options] [ARGS]"
@@ -75,8 +75,9 @@ module Melon
           p.separator format_command(command.command_name,
                                      command.description)
         end
-        p.separator format_command(Commands::Help.command_name,
-                                   Commands::Help.description)
+        # TODO: add help command back into parser helptext
+        # p.separator format_command(Commands::Help.command_name,
+        #                            Commands::Help.description)
         p.separator ""
         p.separator "Options:"
         p.separator ""
