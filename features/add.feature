@@ -51,7 +51,12 @@ Feature: Adding files to the database
     """
     Third test file
     """
-    When I run "melon -d test.db add -r dir"
+    And a file named "test_file" with:
+    """
+    Test file that's not in the subfolder
+    """
+    When I run "melon -d test.db add -r dir test_file"
     Then the output should contain "dir/test1"
     And the output should contain "dir/test2"
     And the output should contain "dir/test/test3"
+    And the output should contain "test_file"
