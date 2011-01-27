@@ -57,6 +57,8 @@ module Melon
     def parse_options
       options = self.class.default_options
 
+      # TODO: -q option, gags stdout (not stderr)
+
       parser = OptionParser.new do |p|
         p.banner = "Usage: melon [options] COMMAND [command-options] [ARGS]"
 
