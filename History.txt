@@ -1,3 +1,7 @@
+=== 0.3.0 2011-01-28
+* Major improvements:
+  * added 'help' command'
+
 === 0.2.0 2011-01-26
 * Major improvements:
   * added --recursive flag to add subcommand
