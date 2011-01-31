@@ -27,7 +27,8 @@ module Melon
       # get the file size in megs
       file_size = File.size(filename) / 1024 ** 2
       case file_size
-      when 0..100 then 0
+      when 0...150 then 0
+      when 150...2000 then 15000000
       else file_size * 18629 - 24863642
       end
     end
