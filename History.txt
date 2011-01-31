@@ -1,3 +1,7 @@
+=== 0.4.0 2011-01-31
+* Major improvements:
+  * Updated hashing strategy to be more robust against collisions
+
 === 0.3.0 2011-01-28
 * Major improvements:
   * added 'help' command'
