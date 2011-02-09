@@ -25,3 +25,16 @@ Feature: Check
     """
     melon: no such file: nonexistant_file
     """
+
+  Scenario: Checking recursively
+    Given a file named "dir/test2" with:
+    """
+    Another test file
+    """
+    And a file named "dir/sub/test3" with:
+    """
+    Nothing to see here, folks
+    """
+    When I run "melon -d test.db check -r dir"
+    Then the output should contain "dir/test2"
+    And the output should contain "dir/sub/test3"

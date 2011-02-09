@@ -18,11 +18,25 @@ EOS
         "file [file [file ...]"
       end
 
+      def parser_options(parser)
+        parser.on("-r", "--recursive", "Recursively check directory contents") do
+          options.recursive = true
+        end
+      end
+
       def run
         parse_options!
 
+        if options.recursive
+          self.args = recursively_expand(args)
+        end
+
         options.database.transaction do
           args.each do |filename|
+            if File.directory?(filename)
+              error "argument is a directory: #{arg}"
+            end
+
             hash = Hasher.digest(filename)
             unless options.database[:by_hash][hash]
               puts File.expand_path(filename)
