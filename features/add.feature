@@ -67,6 +67,6 @@ Feature: Adding files to the database
     Also a test file
     """
     And I run "melon -d test.db add -q test_file"
-    When I run "melon -d test.db add -u test_file test2"
+    When I run "melon -d test.db add -u test2 test_file"
     Then the output should contain "test2"
     And the output should not contain "test_file"
