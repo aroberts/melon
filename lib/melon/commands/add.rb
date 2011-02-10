@@ -1,5 +1,6 @@
 require 'melon/hasher'
 require 'melon/commands/base'
+require 'melon/commands/common_options'
 
 module Melon
   module Commands
@@ -13,14 +14,18 @@ module Melon
           options.quiet = true
         end
 
-        parser.on("-r", "--recursive", "Recursively add directory contents") do
-          options.recursive = true
-        end
+        CommonOptions.recursive(parser, options)
 
-        parser.on("-u" "--update", 
+        parser.on("-u", "--update", 
                   "Skip paths already present in the database") do
           options.update = true
-                  end
+        end
+
+        CommonOptions.preserve_symlinks(parser, options)
+      end
+
+      def usageargs
+        "FILE [FILE [FILE ...]"
       end
 
       def run
