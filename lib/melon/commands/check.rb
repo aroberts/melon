@@ -1,4 +1,5 @@
 require 'melon/commands/base'
+require 'melon/commands/common_options'
 
 module Melon
   module Commands
@@ -15,13 +16,12 @@ EOS
       end
 
       def usageargs
-        "file [file [file ...]"
+        "FILE [FILE [FILE ...]"
       end
 
       def parser_options(parser)
-        parser.on("-r", "--recursive", "Recursively check directory contents") do
-          options.recursive = true
-        end
+        CommonOptions.recursive(parser, options)
+        CommonOptions.preserve_symlinks(parser, options)
       end
 
       def run
