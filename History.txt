@@ -1,3 +1,8 @@
+=== 0.5.0 2011-02-09
+* Major improvements:
+  * Added --recursive option to 'check' subcommand
+  * Added --update option to 'add' subcommand
+
 === 0.4.0 2011-01-31
 * Major improvements:
   * Updated hashing strategy to be more robust against collisions
