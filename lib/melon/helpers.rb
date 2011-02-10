@@ -53,5 +53,9 @@ module Melon
         end
       end.flatten.reject { |arg| File.directory?(arg) }
     end
+
+    def resolve_symlinks(file)
+      Pathname.new(file).realpath.to_s
+    end
   end
 end

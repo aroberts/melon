@@ -61,7 +61,7 @@ Feature: Adding files to the database
     And the output should contain "dir/test/test3"
     And the output should contain "test_file"
     
-  Scenario: Adding as an update
+  Scenario: Updating via add
     Given a file named "test2" with:
     """
     Also a test file
@@ -70,3 +70,16 @@ Feature: Adding files to the database
     When I run "melon -d test.db add -u test2 test_file"
     Then the output should contain "test2"
     And the output should not contain "test_file"
+
+  Scenario: Adding a symlinked file
+    Given I run "ln -s test_file link"
+    When I run "melon -d test.db add link"
+    Then the output should contain "test_file"
+    And the output should not contain "link"
+
+  Scenario: Adding a symlinked file, preserving symlinks
+    Given I run "ln -s test_file link"
+    When I run "melon -d test.db add -p link"
+    Then the output should not contain "test_file"
+    And the output should contain "link"
+

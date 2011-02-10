@@ -38,6 +38,7 @@ module Melon
         options.database.transaction do
           args.each do |arg|
             filename = File.expand_path(arg)
+            filename = resolve_symlinks(filename) unless options.preserve_symlinks
 
             if File.directory?(filename)
               error "argument is a directory: #{arg}"

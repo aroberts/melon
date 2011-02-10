@@ -32,14 +32,17 @@ EOS
         end
 
         options.database.transaction do
-          args.each do |filename|
+          args.each do |arg|
+            filename = File.expand_path(arg)
+            filename = resolve_symlinks(filename) unless options.preserve_symlinks
+
             if File.directory?(filename)
               error "argument is a directory: #{arg}"
             end
 
             hash = Hasher.digest(filename)
             unless options.database[:by_hash][hash]
-              puts File.expand_path(filename)
+              puts filename
             end
           end
         end
