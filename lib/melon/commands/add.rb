@@ -16,6 +16,11 @@ module Melon
         parser.on("-r", "--recursive", "Recursively add directory contents") do
           options.recursive = true
         end
+
+        parser.on("-u" "--update", 
+                  "Skip paths already present in the database") do
+          options.update = true
+                  end
       end
 
       def run
@@ -34,6 +39,7 @@ module Melon
             end
 
             if options.database[:by_path][filename]
+              next if options.update
               error "path already present in database: #{arg}"
             end
 

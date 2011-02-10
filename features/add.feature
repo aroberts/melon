@@ -60,3 +60,13 @@ Feature: Adding files to the database
     And the output should contain "dir/test2"
     And the output should contain "dir/test/test3"
     And the output should contain "test_file"
+    
+  Scenario: Adding as an update
+    Given a file named "test2" with:
+    """
+    Also a test file
+    """
+    And I run "melon -d test.db add -q test_file"
+    When I run "melon -d test.db add -u test_file test2"
+    Then the output should contain "test2"
+    And the output should not contain "test_file"
