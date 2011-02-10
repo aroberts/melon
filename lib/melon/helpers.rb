@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Melon
   module Helpers
     def format_command(name, desc, options = {})

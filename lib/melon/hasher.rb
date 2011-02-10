@@ -3,7 +3,7 @@ require 'digestif/hasher'
 
 module Melon
   class Hasher
-    # TODO: scale seek size up with file size
+    # scale seek size up with file size
     # 100M        => 0
     # 1000M       => 
     # 2000M       =>

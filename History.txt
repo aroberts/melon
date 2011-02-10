@@ -1,4 +1,8 @@
 === 0.6.0 2011-02-10
+* Minor improvements
+  * Fixed symlink-related bug
+
+=== 0.6.0 2011-02-10
 * Major improvements
   * melon now expands symlinks by default
   * Added --preserve-symlinks option
