@@ -48,9 +48,12 @@ module Melon
       def usageargs; end
       def helptext; end
 
+      def run; raise; end
+
       def self.description
         raise
       end
+
 
       def parse_options!
         begin

@@ -16,7 +16,7 @@ EOS
       end
 
       def usageargs
-        "FILE [FILE [FILE ...]"
+        "FILE [FILE [FILE ...]]"
       end
 
       def parser_options(parser)

@@ -8,7 +8,7 @@ module Melon
       end
 
       def usageargs
-        "file [file [file ...]]"
+        "FILE [FILE [FILE ...]"
       end
 
       def helptext

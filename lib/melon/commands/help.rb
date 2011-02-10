@@ -1,3 +1,4 @@
+require 'melon/cli'
 require 'melon/commands/base'
 require 'melon/commands'
 
@@ -8,10 +9,15 @@ module Melon
         "Get help with a specific command"
       end
 
-      def run
+      def run(cli)
+        if args.empty?
+          puts cli.parser
+          exit
+        end
         help = args.shift
         begin
           puts Commands[help.capitalize].new(args, options).parser
+          exit
         rescue NameError => e
           # don't swallow NoMethodErrors
           raise e unless e.instance_of?(NameError)

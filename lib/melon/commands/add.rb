@@ -25,7 +25,7 @@ module Melon
       end
 
       def usageargs
-        "FILE [FILE [FILE ...]"
+        "FILE [FILE [FILE ...]]"
       end
 
       def run
