@@ -8,11 +8,13 @@ module Melon
       end
 
       def parser_options(parser)
-          parser.on("-p", "--paths", "print only paths") do
+          parser.on("-p", "--paths", "Print only paths") do
             options.only_paths = true
           end
           # TODO: re-enable this as -h after help command goes in
-          # parser.on("--hashes", "print only hashes") { options.only_hashes = true }
+          parser.on("-c", "--checksums", "print only hashes") do
+            options.only_hashes = true 
+          end
       end
 
       def verify_args
@@ -24,7 +26,10 @@ module Melon
 
         options.database.transaction do
           options.database[:by_hash].each_pair do |hash, path|
-            puts "#{path}:#{hash}"
+            out = [path, hash]
+            out.delete(path) if options.only_hashes
+            out.delete(hash) if options.only_paths
+            puts out.join(":")
           end
         end
       end
