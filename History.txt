@@ -1,4 +1,8 @@
-=== 0.6.0 2011-02-10
+=== 0.7.0 2012-09-12
+* Major improvements
+  * Added 'remove' command
+
+=== 0.6.1 2011-02-10
 * Minor improvements
   * Fixed symlink-related bug
 

@@ -1,6 +1,6 @@
 module Melon
   def self.version
-    "0.6.1"
+    "0.7"
   end
 
   def self.version_string
