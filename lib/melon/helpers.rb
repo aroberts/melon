@@ -49,7 +49,8 @@ module Melon
     def recursively_expand(filelist)
       filelist.collect do |arg|
         if File.directory?(arg)
-          Dir["#{arg}/**/*"]
+          # follow 0,1,2 symlinks
+          Dir.glob("#{arg}/**{,/*/**,/*/**/*/**}/*")
         else
           arg
         end

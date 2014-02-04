@@ -1,3 +1,7 @@
+=== 0.8.0 2014-02-04
+* Major improvements
+  * 'add' commmand now follows up to two symlinks when used recursively
+
 === 0.7.0 2012-09-12
 * Major improvements
   * Added 'remove' command
