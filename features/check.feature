@@ -10,17 +10,17 @@ Feature: Check
     """
 
   Scenario: Checking a file that is not in the database
-    When I run "melon -d test.db check test_file"
+    When I run `melon -d test.db check test_file`
     Then the output should contain "test_file"
     And the output should start with "/"
 
   Scenario: Checking a file that is in the database:
-    When I run "melon -d test.db add -q test_file"
-    And I run "melon -d test.db check test_file"
+    When I run `melon -d test.db add -q test_file`
+    And I run `melon -d test.db check test_file`
     Then the output should be empty
 
   Scenario: Checking a file that doesn't exist
-    When I run "melon -d test.db check nonexistant_file"
+    When I run `melon -d test.db check nonexistant_file`
     Then it should fail with:
     """
     melon: no such file: nonexistant_file
@@ -35,6 +35,6 @@ Feature: Check
     """
     Nothing to see here, folks
     """
-    When I run "melon -d test.db check -r dir"
+    When I run `melon -d test.db check -r dir`
     Then the output should contain "dir/test2"
     And the output should contain "dir/sub/test3"

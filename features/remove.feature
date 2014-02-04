@@ -16,19 +16,19 @@ Feature: Remove file from the database
     """
     I am a unique flower
     """
-    And I run "melon -d test.db add -q test_file"
+    And I run `melon -d test.db add -q test_file`
 
   Scenario: Removing a tracked file
-    When I run "melon -d test.db remove test_file"
+    When I run `melon -d test.db remove test_file`
     Then the output should contain "test_file"
     # TODO: demand empty list
 
   Scenario: Removing a tracked file by hash
-    When I run "melon -d test.db remove same_file"
+    When I run `melon -d test.db remove same_file`
     Then the output should contain "test_file"
 
   Scenario: Attempting to removean untracked file
-    When I run "melon -d test.db remove different_file"
+    When I run `melon -d test.db remove different_file`
     Then the output should contain "untracked file"
     And the output should contain "different_file"
 

@@ -11,13 +11,13 @@ Feature: Adding files to the database
     """
 
   Scenario: Adding files to a melon database
-    When I run "melon -d test.db add test_file"
+    When I run `melon -d test.db add test_file`
     Then the output should contain a hash
     And the output should contain "test_file"
 
   Scenario: Adding a file that already exists
-    When I run "melon -d test.db add test_file"
-    And I run "melon -d test.db add test_file"
+    When I run `melon -d test.db add test_file`
+    And I run `melon -d test.db add test_file`
     Then it should fail with:
     """
     melon: path already present in database
@@ -25,14 +25,14 @@ Feature: Adding files to the database
 
   Scenario: Adding a directory itself
     Given a directory named "testo"
-    When I run "melon -d test.db add testo"
+    When I run `melon -d test.db add testo`
     Then it should fail with:
     """
     directory
     """
 
   Scenario: Adding a file that doesn't exist
-    When I run "melon -d test.db add nonexistant_file"
+    When I run `melon -d test.db add nonexistant_file`
     Then it should fail with:
     """
     melon: no such file: nonexistant_file
@@ -55,7 +55,7 @@ Feature: Adding files to the database
     """
     Test file that's not in the subfolder
     """
-    When I run "melon -d test.db add -r dir test_file"
+    When I run `melon -d test.db add -r dir test_file`
     Then the output should contain "dir/test1"
     And the output should contain "dir/test2"
     And the output should contain "dir/test/test3"
@@ -66,20 +66,20 @@ Feature: Adding files to the database
     """
     Also a test file
     """
-    And I run "melon -d test.db add -q test_file"
-    When I run "melon -d test.db add -u test2 test_file"
+    And I run `melon -d test.db add -q test_file`
+    When I run `melon -d test.db add -u test2 test_file`
     Then the output should contain "test2"
     And the output should not contain "test_file"
 
   Scenario: Adding a symlinked file
-    Given I run "ln -s test_file link"
-    When I run "melon -d test.db add link"
+    Given I run `ln -s test_file link`
+    When I run `melon -d test.db add link`
     Then the output should contain "test_file"
     And the output should not contain "link"
 
   Scenario: Adding a symlinked file, preserving symlinks
-    Given I run "ln -s test_file link"
-    When I run "melon -d test.db add -p link"
+    Given I run `ln -s test_file link`
+    When I run `melon -d test.db add -p link`
     Then the output should not contain "test_file"
     And the output should contain "link"
 
