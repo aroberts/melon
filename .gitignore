@@ -6,3 +6,4 @@ pkg
 coverage
 *.db
 Gemfile.lock
+*.gem
