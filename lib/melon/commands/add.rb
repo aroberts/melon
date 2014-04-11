@@ -35,8 +35,8 @@ module Melon
           self.args = recursively_expand(args)
         end
 
-        options.database.transaction do
-          args.each do |arg|
+        args.each do |arg|
+          options.database.transaction do
             filename = File.expand_path(arg)
             filename = resolve_symlinks(filename) unless options.preserve_symlinks
 
