@@ -47,14 +47,25 @@ module Melon
     end
 
     def recursively_expand(filelist)
-      filelist.collect do |arg|
-        if File.directory?(arg)
-          # follow 0,1,2 symlinks
-          Dir.glob("#{arg}/**{,/*/**,/*/**/*/**}/*")
-        else
-          arg
+      filelist.collect do |entry|
+        fileish = Pathname.new(entry)
+        if fileish.file?
+          fileish
+        elsif fileish.directory?
+          expand_dir(fileish)
         end
-      end.flatten.reject { |arg| File.directory?(arg) }
+      end.flatten(1)
+    end
+
+    def expand_dir(path)
+      path.children.collect do |child|
+        if child.file?
+          child
+        elsif child.directory?
+          expand_dir(child)
+        end
+      end.select { |x| x }.flatten(1)
+
     end
 
     def resolve_symlinks(file)
